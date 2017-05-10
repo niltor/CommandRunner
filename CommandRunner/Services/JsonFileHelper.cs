@@ -83,7 +83,7 @@ namespace CommandRunner.Services
       return true;
     }
 
-    public bool Delete(String fileName)
+    public Boolean Delete(String fileName)
     {
       FileInfo file = new FileInfo(Path.Combine(DirPath, fileName + ".json"));
       if (file.Exists)
