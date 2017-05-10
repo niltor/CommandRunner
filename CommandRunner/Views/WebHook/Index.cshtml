@@ -1,0 +1,83 @@
+@using CommandRunner.Models
+@{
+  ViewData["Title"] = "Index";
+  List<TaskModel> taskList = ViewBag.TaskList;
+}
+<style type="text/css">
+  .task-item {
+    padding: 4px;
+    border: 1px solid #aaa;
+    cursor: pointer;
+  }
+</style>
+<div class="row">
+
+  <div class="col-xs-3">
+    <h5>Task List</h5>
+
+    @{
+      if (taskList != null)
+      {
+        foreach (TaskModel task in taskList)
+        {
+          <p class="task-item" data-content="@task.Commands">
+            @task.Title
+          </p>
+        }
+      }
+    }
+  </div>
+
+  <div class="col-xs-8">
+    <div>
+      <h4>Commands
+        <button class="btn btn-primary" id="runCommands">Run</button>
+      </h4>
+      <pre><code id="commands"></code></pre>
+    </div>
+    <form asp-action="AddCommand" method="post" class="well well-sm">
+      <h4>Add Commands</h4>
+      <div class="form-group">
+        <input type="text" name="Title" value="" class="form-control"
+               placeholder="Task Name" required/>
+      </div>
+      <div class="form-group">
+        <textarea name="Commands" rows="3" class="form-control"
+                  placeholder="Commands" required></textarea>
+      </div>
+      <div class="form-group">
+
+        <button class="btn btn-success" type="submit">New</button>
+      </div>
+    </form>
+  </div>
+</div>
+@section Scripts{
+  <script>
+    $(document).ready(function() {
+      $(".task-item").click(function() {
+        const command = $(this).data("content");
+        $("#commands").text(command);
+
+      });
+
+      $("#runCommands").click(function() {
+        const command = $("#commands").text();
+
+        if (command === "" || command == null) {
+          alert("please chose your task!");
+        }
+        $.post('/webhook/runTask',
+          { commands: command },
+          function (data) {
+
+            console.log(data);
+            if (data) {
+              $("#commands").html(data);
+            }
+          });
+      });
+    });
+  </script>
+}
+
