@@ -22,15 +22,11 @@ namespace CommandRunner.Controllers
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(String result)
     {
-
       JsonFileHelper jfh = new JsonFileHelper();
 
-
       List<TaskModel> taskList = await jfh.Read<List<TaskModel>>("./taskCommands.json");
-
-
       Console.WriteLine(JsonConvert.SerializeObject(taskList));
       ViewBag.TaskList = taskList;
       return View();
@@ -50,6 +46,12 @@ namespace CommandRunner.Controllers
     [HttpPost]
     public async Task<IActionResult> AddCommand(TaskModel task)
     {
+
+      if (String.IsNullOrEmpty(task.Title) || String.IsNullOrEmpty(task.Commands))
+      {
+      return RedirectToAction("Index", new { result = "null value" });
+
+      }
       JsonFileHelper jfh = new JsonFileHelper();
       task.Id = Guid.NewGuid();
       await jfh.Insert("./taskCommands.json", task);
