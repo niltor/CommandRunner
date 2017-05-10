@@ -13,6 +13,7 @@ namespace CommandRunner
         {
             IWebHost host = new WebHostBuilder()
                 .UseKestrel()
+                .UseUrls("http://localhost:10916")
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
