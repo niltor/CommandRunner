@@ -96,6 +96,16 @@ namespace CommandRunner.Controllers
     }
 
 
+    [HttpPost]
+
+    public async Task<IActionResult> EditCommand(TaskModel task)
+    {
+
+      task.Id = Guid.NewGuid();
+      Boolean re= await _jfh.Update(task.Title, task);
+      return Content(re.ToString());
+    }
+
 
     /// <summary>
     /// Add Command
@@ -110,9 +120,8 @@ namespace CommandRunner.Controllers
         return RedirectToAction("Index", new { result = "null value" });
 
       }
-      JsonFileHelper jfh = new JsonFileHelper();
       task.Id = Guid.NewGuid();
-      await jfh.Insert(task);
+      await _jfh.Insert(task);
 
       return RedirectToAction("Index", new { result = "success" });
     }

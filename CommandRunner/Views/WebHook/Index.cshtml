@@ -9,23 +9,39 @@
     padding: 4px;
     border: 1px solid #aaa;
     cursor: pointer;
+    margin-bottom: 4px;
+  }
+
+  .consoleWindow > pre {
+    background: #222 !important;
+    color: #00a000 !important;
+    border: none;
+  }
+
+  .consoleWindow {
+    max-height: 600px;
+    overflow-y: auto;
+    margin-bottom: 12px;
   }
 </style>
 <div class="row">
 
   <div class="col-xs-3">
-    <h5>Task List</h5>
+    <h4>Task List</h4>
 
     @{
       if (taskList != null)
       {
+
         foreach (TaskModel task in taskList)
         {
-          <div class="task-item" data-content="@task.Commands">
+          //task-item
+          <div class="task-item" data-content="@task.Commands" data-title="@task.Title">
             <span>@task.Title</span>
             <span class="pull-right text-danger delTask" data-content="@task.Title">
               Del
             </span>
+
           </div>
 
         }
@@ -34,13 +50,34 @@
   </div>
 
   <div class="col-xs-8">
-    <div>
-      <h4>
-        Commands
-        <button class="btn btn-primary" id="runCommands">Run</button>
-      </h4>
-      <pre><code id="commands"></code></pre>
+
+    <h4>
+      Commands
+      <button class="btn btn-sm btn-primary" id="runCommands">Run</button>
+    </h4>
+    @* consoleWindow *@
+    <div class="consoleWindow">
+
+      @*  editCommandComponent*@
+      <div id="editCommandComponent" class="well well-sm" style="display: none;">
+        <h4>Edit Commands</h4>
+
+        <div class="form-group">
+          <textarea name="commands" class="form-control" rows="3" id="editCommandInput"></textarea>
+
+        </div>
+        <div class="form-group">
+          <button class="btn btn-sm btn-success" id="saveCommandButton">Save</button>
+
+        </div>
+
+      </div>
+
+      @* codePre *@
+      <pre id="codePre" style="display: none;"><code id="commands"></code></pre>
+
     </div>
+    @* addCommand Form *@
     <form asp-action="AddCommand" method="post" class="well well-sm">
       <h4>Add Commands</h4>
       <div class="form-group">
@@ -53,7 +90,7 @@
       </div>
       <div class="form-group">
 
-        <button class="btn btn-success" type="submit">New</button>
+        <button class="btn btn-sm btn-success" type="submit">New</button>
       </div>
     </form>
   </div>
@@ -61,17 +98,40 @@
 @section Scripts{
   <script>
     $(document).ready(function () {
+      var title = "";
+      var commands = "";
+
       //chose title
       $(".task-item").click(function () {
-        const command = $(this).data("content");
-        $("#commands").text(command);
+        commands = $(this).data("content");
+        title = $(this).data("title");
 
+        $("#editCommandInput").val(commands);
+        $("#editCommandComponent").show();
+        $("#codePre").hide();
+        $("#commands").text(commands);
+
+      });
+
+      //edit
+      $("#saveCommandButton").click(function (event) {
+        const command = $("#editCommandInput").val();
+
+        $.post('/webhook/EditCommand',
+          { Id: null, Title: title, Commands: command },
+          function (data) {
+            console.log(data);
+            if (data === "True") {
+              alert("Save Success!");
+              commands = command;
+            }
+          });
       });
 
       //del
       $(".delTask").click(function (event) {
         event.preventDefault();
-        const title = $(this).data("content");
+        title = $(this).data("content");
         $.post('/webhook/delTask',
           { title: title },
           function (data) {
@@ -87,13 +147,14 @@
 
       //run
       $("#runCommands").click(function () {
-        const command = $("#commands").text();
-
-        if (command === "" || command == null) {
+        if (commands === "" || commands == null) {
           alert("please chose your task!");
         }
+
+        $("#editCommandComponent").hide();
+        $("#codePre").show();
         $.post('/webhook/runTask',
-          { commands: command },
+          { commands: commands },
           function (data) {
 
             console.log(data);
