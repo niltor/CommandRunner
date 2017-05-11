@@ -36,9 +36,9 @@ namespace CommandRunner.Controllers
     /// <returns></returns>
     [HttpPost]
     //TODO: 应加权限限制
-    public String RunTask(String commands)
+    public async Task<String> RunTask(String commands)
     {
-      String re = _runner.RunCommand(commands);
+      String re = await _runner.RunCommand(commands);
       return re;
     }
 
@@ -46,11 +46,11 @@ namespace CommandRunner.Controllers
     /// <summary>
     /// GitLab WebHook
     /// </summary>
+    /// <param name="parameter"></param>
     /// <param name="taskName"></param>
     /// <returns></returns>
-
     [HttpPost]
-    public async Task<Boolean> GitLab([FromBody]JObject parameter, String taskName = null)
+    public async Task<IActionResult> GitLab([FromBody]JObject parameter, String taskName = null)
     {
 
       String eventType = parameter.GetValue("event_name").ToString();
@@ -65,7 +65,7 @@ namespace CommandRunner.Controllers
 
       if (String.IsNullOrEmpty(taskName))
       {
-        return false;
+        return NotFound();
       }
 
       if (eventType == "push" && branch == defaultBranch)
@@ -75,7 +75,7 @@ namespace CommandRunner.Controllers
         RunTask(task.Commands);
       }
 
-      return true;
+      return Ok();
     }
 
     /// <summary>

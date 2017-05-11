@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CommandRunner.Services
 {
@@ -17,7 +18,7 @@ namespace CommandRunner.Services
 
     }
 
-    public String RunCommand(String command)
+    public async Task<String> RunCommand(String command)
     {
       String result = command + "\r";
       Process myProcess = new Process();
@@ -41,7 +42,7 @@ namespace CommandRunner.Services
         myProcess.Start();
 
         StreamReader reader = myProcess.StandardOutput;
-        String line = reader.ReadLine();
+        String line = await reader.ReadLineAsync();
 
         while (line != null)
         {
