@@ -53,16 +53,21 @@ namespace CommandRunner.Controllers
     public async Task<Boolean> GitLab([FromBody]JObject parameter, String taskName = null)
     {
 
-      String eventType = parameter.GetValue("object_kind").ToString();
+      String eventType = parameter.GetValue("event_name").ToString();
       Console.WriteLine(parameter.ToString());
       String branch = parameter.GetValue("ref").ToString();
+
+      String defaultBranch = parameter.GetValue("project").Value<String>("default_branch");
+    
+
+      Console.WriteLine(defaultBranch);
 
       if (String.IsNullOrEmpty(taskName))
       {
         return false;
       }
 
-      if (eventType == "" && branch == "")
+      if (eventType == "push" && branch == defaultBranch)
       {
       }
       JsonFileHelper jfh = new JsonFileHelper();
