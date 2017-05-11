@@ -49,7 +49,11 @@ namespace CommandRunner.Services
       return taskList;
 
     }
-
+    /// <summary>
+    /// 读取某一任务配置
+    /// </summary>
+    /// <param name="fileName">任务名称</param>
+    /// <returns></returns>
     public async Task<TaskModel> Read(String fileName)
     {
       TaskModel taskModel = new TaskModel();
@@ -68,11 +72,11 @@ namespace CommandRunner.Services
     /// <summary>
     /// 新建任务
     /// </summary>
-    /// <param name="task"></param>
+    /// <param name="task">TaskModel</param>
     /// <returns></returns>
     public async Task<Boolean> Insert(TaskModel task)
     {
-      FileInfo file = new FileInfo(task.Title+".json");
+      FileInfo file = new FileInfo(Path.Combine(DirPath, task.Title + ".json"));
       if (file.Exists)
       {
         return false;
@@ -83,6 +87,11 @@ namespace CommandRunner.Services
       return true;
     }
 
+    /// <summary>
+    /// 删除一任务
+    /// </summary>
+    /// <param name="fileName">任务名称</param>
+    /// <returns></returns>
     public Boolean Delete(String fileName)
     {
       FileInfo file = new FileInfo(Path.Combine(DirPath, fileName + ".json"));
