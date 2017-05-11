@@ -54,13 +54,14 @@ namespace CommandRunner.Controllers
     {
 
       String eventType = parameter.GetValue("event_name").ToString();
-      Console.WriteLine(parameter.ToString());
+      Console.WriteLine("EventName:" + eventType);
       String branch = parameter.GetValue("ref").ToString();
+      branch = branch.Replace("refs/heads/", String.Empty);
+      Console.WriteLine("Push Branch:" + branch);
 
       String defaultBranch = parameter.GetValue("project").Value<String>("default_branch");
-    
 
-      Console.WriteLine(defaultBranch);
+      Console.WriteLine("Default Branch:" + defaultBranch);
 
       if (String.IsNullOrEmpty(taskName))
       {
@@ -69,10 +70,11 @@ namespace CommandRunner.Controllers
 
       if (eventType == "push" && branch == defaultBranch)
       {
+        JsonFileHelper jfh = new JsonFileHelper();
+        TaskModel task = await jfh.Read(taskName);
+        RunTask(task.Commands);
       }
-      JsonFileHelper jfh = new JsonFileHelper();
-      TaskModel task = await jfh.Read(taskName);
-      RunTask(task.Commands);
+
       return true;
     }
 
