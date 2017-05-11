@@ -1,3 +1,4 @@
+@using System.Collections.Generic
 @using CommandRunner.Models
 @{
   ViewData["Title"] = "Index";
@@ -20,9 +21,13 @@
       {
         foreach (TaskModel task in taskList)
         {
-          <p class="task-item" data-content="@task.Commands">
-            @task.Title
-          </p>
+          <div class="task-item" data-content="@task.Commands">
+            <span>@task.Title</span>
+            <span class="pull-right text-danger delTask" data-content="@task.Title">
+              Del
+            </span>
+          </div>
+
         }
       }
     }
@@ -30,7 +35,8 @@
 
   <div class="col-xs-8">
     <div>
-      <h4>Commands
+      <h4>
+        Commands
         <button class="btn btn-primary" id="runCommands">Run</button>
       </h4>
       <pre><code id="commands"></code></pre>
@@ -39,7 +45,7 @@
       <h4>Add Commands</h4>
       <div class="form-group">
         <input type="text" name="Title" value="" class="form-control"
-               placeholder="Task Name" required/>
+               placeholder="Task Name" required />
       </div>
       <div class="form-group">
         <textarea name="Commands" rows="3" class="form-control"
@@ -54,14 +60,33 @@
 </div>
 @section Scripts{
   <script>
-    $(document).ready(function() {
-      $(".task-item").click(function() {
+    $(document).ready(function () {
+      //chose title
+      $(".task-item").click(function () {
         const command = $(this).data("content");
         $("#commands").text(command);
 
       });
 
-      $("#runCommands").click(function() {
+      //del
+      $(".delTask").click(function (event) {
+        event.preventDefault();
+        const title = $(this).data("content");
+        $.post('/webhook/delTask',
+          { title: title },
+          function (data) {
+            if (data === "success") {
+              location.reload();
+            } else {
+              alert("del failed!");
+            }
+          });
+
+        return false;
+      });
+
+      //run
+      $("#runCommands").click(function () {
         const command = $("#commands").text();
 
         if (command === "" || command == null) {

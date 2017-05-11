@@ -12,18 +12,19 @@ namespace CommandRunner.Controllers
   public class WebHookController : Controller
   {
     private readonly Runner _runner;
+    private readonly JsonFileHelper _jfh;
 
-    public WebHookController(Runner runner)
+    public WebHookController(Runner runner,JsonFileHelper jfh)
     {
       _runner = runner;
+      _jfh = jfh;
     }
 
     [HttpGet]
     public async Task<IActionResult> Index(String result)
     {
-      JsonFileHelper jfh = new JsonFileHelper();
 
-      List<TaskModel> taskList = await jfh.ReadAllAsync();
+      List<TaskModel> taskList = await _jfh.ReadAllAsync();
       Console.WriteLine(JsonConvert.SerializeObject(taskList));
       ViewBag.TaskList = taskList;
       return View();
@@ -70,8 +71,7 @@ namespace CommandRunner.Controllers
 
       if (eventType == "push" && branch == defaultBranch)
       {
-        JsonFileHelper jfh = new JsonFileHelper();
-        TaskModel task = await jfh.Read(taskName);
+        TaskModel task = await _jfh.Read(taskName);
         RunTask(task.Commands);
       }
 
@@ -90,8 +90,7 @@ namespace CommandRunner.Controllers
       {
         return false;
       }
-      JsonFileHelper jfh = new JsonFileHelper();
-      TaskModel task = await jfh.Read(taskName);
+      TaskModel task = await _jfh.Read(taskName);
       RunTask(task.Commands);
       return true;
     }
@@ -117,5 +116,21 @@ namespace CommandRunner.Controllers
 
       return RedirectToAction("Index", new { result = "success" });
     }
+
+    [HttpPost]
+    public IActionResult DelTask(String title)
+    {
+      if (String.IsNullOrEmpty(title))
+      {
+        return Content("null");
+      }
+      else
+      {
+        return Content(_jfh.Delete(title) ? "success" : "failed");
+      }
+    }
   }
+
+
+  
 }

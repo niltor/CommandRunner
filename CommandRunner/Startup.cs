@@ -30,6 +30,8 @@ namespace CommandRunner
     {
       // Add framework services.
       services.AddMvc();
+
+      services.AddScoped(typeof(JsonFileHelper));
       services.AddScoped(typeof(Runner));
 
     }
