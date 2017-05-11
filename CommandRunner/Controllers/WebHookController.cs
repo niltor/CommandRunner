@@ -42,6 +42,35 @@ namespace CommandRunner.Controllers
       return re;
     }
 
+
+    /// <summary>
+    /// GitLab WebHook
+    /// </summary>
+    /// <param name="taskName"></param>
+    /// <returns></returns>
+
+    [HttpPost]
+    public async Task<Boolean> GitLab([FromBody]JObject parameter, String taskName = null)
+    {
+
+      String eventType = parameter.GetValue("object_kind").ToString();
+      Console.WriteLine(parameter.ToString());
+      String branch = parameter.GetValue("ref").ToString();
+
+      if (String.IsNullOrEmpty(taskName))
+      {
+        return false;
+      }
+
+      if (eventType == "" && branch == "")
+      {
+      }
+      JsonFileHelper jfh = new JsonFileHelper();
+      TaskModel task = await jfh.Read(taskName);
+      RunTask(task.Commands);
+      return true;
+    }
+
     /// <summary>
     /// ´¥·¢Ö´ÐÐ
     /// </summary>
