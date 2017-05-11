@@ -19,7 +19,7 @@ namespace CommandRunner.Services
 
     public String RunCommand(String command)
     {
-      String result = command + "\r\n";
+      String result = command + "\r";
       Process myProcess = new Process();
       try
       {
