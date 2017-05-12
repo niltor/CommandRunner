@@ -31,5 +31,8 @@
   <ItemGroup>
     <Folder Include="Views\WebHook\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MSDev.Tools.CommandRunner\MSDev.Tools.CommandRunner.csproj" />
+  </ItemGroup>
 
 </Project>

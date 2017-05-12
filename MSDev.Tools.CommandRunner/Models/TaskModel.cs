@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace CommandRunner.Models
+namespace MSDev.Tools.CommandRunner.Models
 {
   public class TaskModel
   {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using CommandRunner.Models;
+using MSDev.Tools.CommandRunner.Models;
 using Newtonsoft.Json;
 
 namespace MSDev.Tools.CommandRunner
