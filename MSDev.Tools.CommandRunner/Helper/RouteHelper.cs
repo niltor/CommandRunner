@@ -27,7 +27,7 @@ namespace MSDev.Tools.CommandRunner.Helper
 
             //TODO: run method via reflection ,see webapi project
             //TODO: get or post 
-            
+
             //QueryString parameter = context.Request.QueryString;
 
             if (context.Request.Method.ToLower() == "post")
@@ -46,9 +46,19 @@ namespace MSDev.Tools.CommandRunner.Helper
             return "";
         }
 
-        public void GetClass(String className)
+        public void RunMethod(String className)
         {
-            
+
+            //TODO: run method
+            Type classType = Assembly.GetEntryAssembly().GetType("JsonFileHelper");
+
+            var method = classType?.GetMethod("methodName");
+
+            var parameters = method?.GetParameters();
+
+            object classInstance = Activator.CreateInstance(type, null);
+
+            method.Invoke(classInstance, parameters);
         }
 
         public void ParseQueryString(String queryString)
