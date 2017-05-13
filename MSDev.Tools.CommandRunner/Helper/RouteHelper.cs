@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Reflection;
 using Microsoft.AspNetCore.Http;
 
 namespace MSDev.Tools.CommandRunner.Helper
@@ -45,6 +44,11 @@ namespace MSDev.Tools.CommandRunner.Helper
                 context.Response.WriteAsync(html);
             }
             return "";
+        }
+
+        public void GetClass(String className)
+        {
+            
         }
 
         public void ParseQueryString(String queryString)
