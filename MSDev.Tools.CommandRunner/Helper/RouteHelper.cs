@@ -27,7 +27,7 @@ namespace MSDev.Tools.CommandRunner.Helper
             }
 
             //TODO: run method via reflection ,see webapi project
-
+            //TODO: get or post 
             
             //QueryString parameter = context.Request.QueryString;
 
@@ -45,6 +45,16 @@ namespace MSDev.Tools.CommandRunner.Helper
                 context.Response.WriteAsync(html);
             }
             return "";
+        }
+
+        public void ParseQueryString(String queryString)
+        {
+
+        }
+
+        public void ParseFormData(IFormCollection form)
+        {
+
         }
 
     }

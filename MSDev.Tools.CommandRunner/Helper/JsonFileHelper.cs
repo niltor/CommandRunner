@@ -55,11 +55,14 @@ namespace MSDev.Tools.CommandRunner
         /// <returns></returns>
         public async Task<TaskModel> Read(String fileName)
         {
-            TaskModel taskModel = new TaskModel();
+            var taskModel = new TaskModel();
 
-            FileInfo file = new FileInfo(Path.Combine(DirPath, fileName + ".json"));
+            var file = new FileInfo(Path.Combine(DirPath, fileName + ".json"));
             if (!file.Exists)
+            {
                 return taskModel;
+            }
+
             StreamReader reader = file.OpenText();
             String jsonString = await reader.ReadToEndAsync();
             reader.Dispose();

@@ -24,25 +24,7 @@ namespace MSDev.Tools.CommandRunner
 
         public async Task Invoke(HttpContext context)
         {
-            PathString path =context.Request.Path;
-            QueryString parameter = context.Request.QueryString;
-
-            if (context.Request.Method.ToLower() == "post")
-            {
-                IFormCollection form = context.Request.Form;
-
-            }
-            Console.WriteLine(parameter);
-
-            if (path.Value.Trim('/').ToLower() == "test")
-            {
-                context.Response.ContentType = "text/html";
-
-                String html = "<h1>hello</h1>";
-                await context.Response.WriteAsync(html);
-                return;
-            }
-            Console.WriteLine(path.Value);
+           //TODO: Use RouteHelper
             await _next(context);
         }
 
