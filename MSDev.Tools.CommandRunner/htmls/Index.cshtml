@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebHook</title>
+
+  <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+        asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+        asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+  <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+
+  <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+          asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+          asp-fallback-test="window.jQuery"
+          crossorigin="anonymous"
+          integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
+  </script>
+  <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+          asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+          asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+          crossorigin="anonymous"
+          integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+  </script>
+  <script src="~/js/site.js" asp-append-version="true"></script>
+</head>
+<body>
+
+</body>
+</html>
+<style type="text/css">
+  .task-item {
+    padding: 4px;
+    border: 1px solid #aaa;
+    cursor: pointer;
+    margin-bottom: 4px;
+  }
+
+  .consoleWindow > pre {
+    background: #222 !important;
+    color: #00a000 !important;
+    border: none;
+  }
+
+  .consoleWindow {
+    max-height: 600px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+  }
+</style>
+<div class="row">
+
+  <div class="col-xs-3">
+    <h4>Task List</h4>
+  </div>
+
+  <div class="col-xs-8">
+
+    <h4>
+      Commands
+      <button class="btn btn-sm btn-primary" id="runCommands">Run</button>
+    </h4>
+    @* consoleWindow *@
+    <div class="consoleWindow">
+
+      @*  editCommandComponent*@
+      <div id="editCommandComponent" class="well well-sm" style="display: none;">
+        <h4>Edit Commands</h4>
+
+        <div class="form-group">
+          <textarea name="commands" class="form-control" rows="3" id="editCommandInput"></textarea>
+
+        </div>
+        <div class="form-group">
+          <button class="btn btn-sm btn-success" id="saveCommandButton">Save</button>
+
+        </div>
+
+      </div>
+
+      @* codePre *@
+      <pre id="codePre" style="display: none;"><code id="commands"></code></pre>
+
+    </div>
+    @* addCommand Form *@
+    <form asp-action="AddCommand" method="post" class="well well-sm">
+      <h4>Add Commands</h4>
+      <div class="form-group">
+        <input type="text" name="Title" value="" class="form-control"
+               placeholder="Task Name" required />
+      </div>
+      <div class="form-group">
+        <textarea name="Commands" rows="3" class="form-control"
+                  placeholder="Commands" required></textarea>
+      </div>
+      <div class="form-group">
+
+        <button class="btn btn-sm btn-success" type="submit">New</button>
+      </div>
+    </form>
+  </div>
+</div>
+@section Scripts{
+  <script>
+    $(document).ready(function () {
+      var title = "";
+      var commands = "";
+
+      //chose title
+      $(".task-item").click(function () {
+        commands = $(this).data("content");
+        title = $(this).data("title");
+
+        $("#editCommandInput").val(commands);
+        $("#editCommandComponent").show();
+        $("#codePre").hide();
+        $("#commands").text(commands);
+
+      });
+
+      //edit
+      $("#saveCommandButton").click(function (event) {
+        const command = $("#editCommandInput").val();
+
+        $.post('/webhook/EditCommand',
+          { Id: null, Title: title, Commands: command },
+          function (data) {
+            console.log(data);
+            if (data === "True") {
+              alert("Save Success!");
+              commands = command;
+            }
+          });
+      });
+
+      //del
+      $(".delTask").click(function (event) {
+        event.preventDefault();
+        title = $(this).data("content");
+        $.post('/webhook/delTask',
+          { title: title },
+          function (data) {
+            if (data === "success") {
+              location.reload();
+            } else {
+              alert("del failed!");
+            }
+          });
+
+        return false;
+      });
+
+      //run
+      $("#runCommands").click(function () {
+        if (commands === "" || commands == null) {
+          alert("please chose your task!");
+        }
+
+        $("#editCommandComponent").hide();
+        $("#codePre").show();
+        $.post('/webhook/runTask',
+          { commands: commands },
+          function (data) {
+
+            console.log(data);
+            if (data) {
+              $("#commands").html(data);
+            }
+          });
+      });
+    });
+  </script>
+}
+

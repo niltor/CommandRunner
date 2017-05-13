@@ -54,9 +54,9 @@ namespace CommandRunner.Controllers
     public async Task<IActionResult> GitLab([FromBody]JObject parameter, String taskName = null)
     {
 
-      String eventType = parameter.GetValue("event_name").ToString();
+      var eventType = parameter.GetValue("event_name").ToString();
       Console.WriteLine("EventName:" + eventType);
-      String branch = parameter.GetValue("ref").ToString();
+      var branch = parameter.GetValue("ref").ToString();
       branch = branch.Replace("refs/heads/", String.Empty);
       Console.WriteLine("Push Branch:" + branch);
 
