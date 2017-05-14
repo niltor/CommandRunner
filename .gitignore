@@ -3,6 +3,7 @@
 
 
 */wwwroot/lib/
+*/commandTasks/
 # User-specific files
 *.suo
 *.user
