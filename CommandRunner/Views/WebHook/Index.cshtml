@@ -124,6 +124,8 @@
             if (data === "True") {
               alert("Save Success!");
               commands = command;
+              $(".task-item[data-title='" + title + "']").data("content", command);
+
             }
           });
       });
