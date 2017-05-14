@@ -37,7 +37,8 @@ namespace CommandRunner.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(String username, String password)
         {
-            if (username == password)
+
+            if (username == "Admin" && password=="MSDev.Tools.CommandRunner")
             {
                 // identity field infomatioin
                 var claims = new List<Claim>
