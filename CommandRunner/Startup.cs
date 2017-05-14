@@ -45,7 +45,7 @@ namespace CommandRunner
             services.AddScoped(typeof(JsonFileHelper));
             services.AddScoped(typeof(Runner));
 
-            UserHelper.CreateUserAsync();
+            UserHelper.GetUserAsync();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

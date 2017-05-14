@@ -19,7 +19,8 @@ namespace CommandRunner.Helpers
 
         }
 
-        public static async Task CreateUserAsync()
+
+        public static async Task<UserInfo> GetUserAsync()
         {
             if (File.Exists("./user.lock"))
             {
@@ -42,20 +43,22 @@ namespace CommandRunner.Helpers
                             //UserInfo is null,reinit it.
                             stream.Dispose();
                             await InitUser();
+                        } else
+                        {
+                            return user;
                         }
                     } catch (Exception)
                     {
                         // not valid UserInfo,reinit it.
                         stream.Dispose();
                         await InitUser();
-                        throw;
                     }
                 }
             } else
             {
                 await InitUser();
             }
-
+            return default(UserInfo);
         }
 
         // Initial User

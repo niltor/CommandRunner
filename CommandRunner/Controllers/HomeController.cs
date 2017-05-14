@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using CommandRunner.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +40,10 @@ namespace CommandRunner.Controllers
         public async Task<IActionResult> Login(String username, String password)
         {
 
-            if (username == "Admin" && password=="MSDev.Tools.CommandRunner")
+            UserInfo userInfo = await UserHelper.GetUserAsync();
+
+            password = BitConverter.ToString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(password)));
+            if (username == userInfo.UserName && password == userInfo.Password)
             {
                 // identity field infomatioin
                 var claims = new List<Claim>
@@ -57,7 +62,7 @@ namespace CommandRunner.Controllers
 
                 HttpContext.Session.SetString("username", username);
 
-                return RedirectToAction("Index","WebHook");
+                return RedirectToAction("Index", "WebHook");
 
             }
             return View();
