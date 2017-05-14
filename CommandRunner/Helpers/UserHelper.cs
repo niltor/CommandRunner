@@ -1,0 +1,97 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+namespace CommandRunner.Helpers
+{
+    public class UserHelper
+    {
+        public UserHelper()
+        {
+
+        }
+
+        public static async Task CreateUserAsync()
+        {
+            if (File.Exists("./user.lock"))
+            {
+                var file = new FileInfo("./user.lock");
+                StreamReader stream = file.OpenText();
+
+                String content = stream.ReadToEnd();
+                // UserInfo is null,Init it;
+                if (String.IsNullOrEmpty(content))
+                {
+                    stream.Dispose();
+                    await InitUser();
+                } else
+                {
+                    try
+                    {
+                        UserInfo user = JsonConvert.DeserializeObject<UserInfo>(content);
+                        if (String.IsNullOrEmpty(user.UserName) || String.IsNullOrEmpty(user.Password))
+                        {
+                            //UserInfo is null,reinit it.
+                            stream.Dispose();
+                            await InitUser();
+                        }
+                    } catch (Exception)
+                    {
+                        // not valid UserInfo,reinit it.
+                        stream.Dispose();
+                        await InitUser();
+                        throw;
+                    }
+                }
+            } else
+            {
+                await InitUser();
+            }
+
+        }
+
+        // Initial User
+        public static async Task InitUser()
+        {
+            var file = new FileInfo("./user.lock");
+            FileStream stream = file.OpenWrite();
+            var defaultUser = new UserInfo {
+                UserName = "admin",
+                Password = BitConverter.ToString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes("MSDev.cc")))
+            };
+
+            Byte[] jsonBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(defaultUser));
+            await stream.WriteAsync(jsonBytes, 0, jsonBytes.Length);
+
+            stream.Dispose();
+        }
+
+        public static async Task EditUserAsync(UserInfo user)
+        {
+            var file = new FileInfo("./user.lock");
+            FileStream stream = file.OpenWrite();
+            Byte[] jsonBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user));
+            await stream.WriteAsync(jsonBytes, 0, jsonBytes.Length);
+
+            stream.Dispose();
+        }
+
+    }
+
+    public class UserInfo
+    {
+        public String UserName { get; set; }
+        public String Password { get; set; }
+
+    }
+
+
+}

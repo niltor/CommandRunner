@@ -1,4 +1,5 @@
 using System;
+using CommandRunner.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -44,6 +45,7 @@ namespace CommandRunner
             services.AddScoped(typeof(JsonFileHelper));
             services.AddScoped(typeof(Runner));
 
+            UserHelper.CreateUserAsync();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,7 +73,6 @@ namespace CommandRunner
                 ExpireTimeSpan = TimeSpan.FromMinutes(20)
 
             });
-
 
             app.UseSession();
             app.UseMvc(routes => {
