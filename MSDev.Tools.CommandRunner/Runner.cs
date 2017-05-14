@@ -21,7 +21,7 @@ namespace MSDev.Tools.CommandRunner
     public async Task<String> RunCommand(String command)
     {
       String result = command + "\r";
-      Process myProcess = new Process();
+      var myProcess = new Process();
       try
       {
         myProcess.StartInfo.UseShellExecute = false;
