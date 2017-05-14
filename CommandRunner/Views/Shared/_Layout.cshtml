@@ -46,7 +46,7 @@
               if (session.Keys.Contains("username"))
               {
                   <li>
-                    <a href="#">
+                    <a asp-action="Account" asp-controller="Home">
                       @session.GetString("username")
                     </a>
                   </li>

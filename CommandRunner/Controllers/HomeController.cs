@@ -77,6 +77,19 @@ namespace CommandRunner.Controllers
             return RedirectToAction("Login");
         }
 
+
+        [HttpGet]
+        public IActionResult Account()
+        {
+
+            return View();
+        }
+        [HttpPost]
+        public IActionResult SetAccount(UserInfo user)
+        {
+            return View();
+        }
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Contact()

@@ -35,8 +35,9 @@ namespace CommandRunner
             services.AddMvc();
 
             services.AddDistributedMemoryCache();
+
             services.AddSession(options => {
-                options.CookieName = ".AdventureWorks.Session";
+                options.CookieName = "CommandRunnerCookies";
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
                 options.CookieHttpOnly = true;
             });
