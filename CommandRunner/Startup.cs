@@ -24,8 +24,6 @@ namespace CommandRunner
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddOptions();
             // Add framework services.
             services.AddMvc();
 
@@ -49,8 +47,6 @@ namespace CommandRunner
                 app.UseExceptionHandler("/Home/Error");
             }
             app.UseStaticFiles();
-
-            app.UseCommandRunner(new CommandRunnerOptions { RouteName = "CommandRunner" });
             app.UseMvc(routes => {
                 routes.MapRoute(
                     name: "default",
