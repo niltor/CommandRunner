@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace MSDev.Tools.CommandRunner.Helper
 {
+    /// <summary>
+    /// Abandoned Class
+    /// </summary>
     public class RouteHelper
     {
 
@@ -52,11 +55,11 @@ namespace MSDev.Tools.CommandRunner.Helper
             //TODO: run method
             Type classType = Assembly.GetEntryAssembly().GetType("JsonFileHelper");
 
-            var method = classType?.GetMethod("methodName");
+            MethodInfo method = classType?.GetMethod("methodName");
 
-            var parameters = method?.GetParameters();
+            ParameterInfo[] parameters = method?.GetParameters();
 
-            object classInstance = Activator.CreateInstance(type, null);
+            Object classInstance = Activator.CreateInstance(classType, null);
 
             method.Invoke(classInstance, parameters);
         }

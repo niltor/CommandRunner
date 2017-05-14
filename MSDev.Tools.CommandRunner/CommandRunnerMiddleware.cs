@@ -10,6 +10,9 @@ using Newtonsoft.Json;
 
 namespace MSDev.Tools.CommandRunner
 {
+    /// <summary>
+    /// Abandoned Class
+    /// </summary>
     public class CommandRunnerMiddleware
     {
         readonly RequestDelegate _next;
