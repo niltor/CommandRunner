@@ -25,15 +25,14 @@ namespace CommandRunner.Controllers
         [AllowAnonymous]
         public IActionResult Login()
         {
-            String username = HttpContext.Session.GetString("username");
+            String username = HttpContext.User.FindFirst(p => p.Type == ClaimTypes.Name)?.Value;
 
-            if (username != null)
+            if (!String.IsNullOrEmpty(username))
             {
                 return RedirectToAction(controllerName: "WebHook", actionName: "Index");
             }
             return View();
         }
-
 
         [HttpPost]
         [AllowAnonymous]

@@ -18,8 +18,6 @@ namespace CommandRunner.Helpers
         {
 
         }
-
-
         public static async Task<UserInfo> GetUserAsync()
         {
             if (File.Exists("./user.lock"))

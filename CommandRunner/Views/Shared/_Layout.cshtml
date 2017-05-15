@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Http;
-
+@using Newtonsoft.Json;
 @inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 <!DOCTYPE html>
 <html>
@@ -43,6 +43,7 @@
         <ul class="nav navbar-nav navbar-right">
           @{
               var session = Context.Session;
+
               if (session.Keys.Contains("username"))
               {
                   <li>

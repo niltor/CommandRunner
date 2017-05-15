@@ -1,5 +1,6 @@
 using System;
 using CommandRunner.Helpers;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -37,7 +38,7 @@ namespace CommandRunner
             services.AddDistributedMemoryCache();
 
             services.AddSession(options => {
-                options.CookieName = "CommandRunnerCookies";
+                options.CookieName = ".Session.CommandRunnerCookies";
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
                 options.CookieHttpOnly = true;
             });
@@ -64,6 +65,7 @@ namespace CommandRunner
                 app.UseExceptionHandler("/Home/Error");
             }
             app.UseStaticFiles();
+            app.UseSession();
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions() {
                 AuthenticationScheme = "CommandRunnerCookies",
@@ -71,11 +73,13 @@ namespace CommandRunner
                 AccessDeniedPath = new PathString("/Home/Forbidden/"),
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
-                ExpireTimeSpan = TimeSpan.FromMinutes(20)
+                ExpireTimeSpan = TimeSpan.FromDays(1),
+                //Events = new CookieAuthenticationEvents {
+                //    OnValidatePrincipal = SessionHelper.ValidateAsync
+                //}
 
             });
 
-            app.UseSession();
             app.UseMvc(routes => {
                 routes.MapRoute(
                     name: "default",
