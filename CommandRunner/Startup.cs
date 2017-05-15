@@ -74,9 +74,9 @@ namespace CommandRunner
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
                 ExpireTimeSpan = TimeSpan.FromDays(1),
-                //Events = new CookieAuthenticationEvents {
-                //    OnValidatePrincipal = SessionHelper.ValidateAsync
-                //}
+                Events = new CookieAuthenticationEvents {
+                    OnValidatePrincipal = SessionHelper.ValidateAsync
+                }
 
             });
 
