@@ -196,6 +196,7 @@
       socket.send(data);
 
       socket.onmessage = function (event) {
+        console.log(event.data);
         let data = event.data + "</br>";
         $("#commands").append(data);
         if (event.data == "Done") {
