@@ -10,7 +10,7 @@ using Newtonsoft.Json.Linq;
 
 namespace CommandRunner.Controllers
 {
-    [Authorize(Policy ="Admin")]
+    [Authorize(Policy = "Admin")]
     public class WebHookController : Controller
     {
         private readonly Runner _runner;

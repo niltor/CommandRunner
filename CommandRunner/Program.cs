@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CommandRunner.Helpers;
 using Microsoft.AspNetCore.Hosting;
 
 namespace CommandRunner
@@ -11,6 +12,7 @@ namespace CommandRunner
     {
         public static void Main(String[] args)
         {
+
             IWebHost host = new WebHostBuilder()
                 .UseKestrel()
                 .UseUrls("http://localhost:10916")

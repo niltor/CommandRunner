@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -22,10 +22,8 @@ namespace CommandRunner.Helpers
             if (!String.IsNullOrEmpty(cookieUserName))
             {
                 session.SetString("username", cookieUserName);
-
             }
-
-
+            await Task.Yield();
         }
     }
 }

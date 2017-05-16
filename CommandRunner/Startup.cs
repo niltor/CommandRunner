@@ -27,12 +27,8 @@ namespace CommandRunner
         public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public async Task ConfigureServicesAsync(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddAuthorization(options => {
-                options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
-            });
             // Add framework services.
             services.AddMvc();
 
@@ -43,12 +39,15 @@ namespace CommandRunner
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
                 options.CookieHttpOnly = true;
             });
-
+            services.AddAuthorization(options => {
+                options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+            });
 
             services.AddScoped(typeof(JsonFileHelper));
             services.AddScoped(typeof(Runner));
 
-            await UserHelper.GetUserAsync();
+            UserHelper.GetUserAsync();
+        
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,6 +85,7 @@ namespace CommandRunner
                     name: "default",
                     template: "{controller=Home}/{action=Login}/{id?}");
             });
+
         }
     }
 }
