@@ -40,7 +40,7 @@ namespace CommandRunner.Controllers
         /// </summary>
         /// <param name="commands"></param>
         /// <returns></returns>
-        [HttpPost]
+        [AllowAnonymous]
         //TODO: 应加权限限制
         public async Task RunTaskAsync(String commands)
         {

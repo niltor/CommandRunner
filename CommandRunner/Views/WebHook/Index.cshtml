@@ -38,9 +38,9 @@
           foreach (TaskModel task in taskList)
           {
             //task-item
-            <div class="task-item" data- content="@task.Commands" data- title="@task.Title">
+            <div class="task-item" data-content="@task.Commands" data-title="@task.Title">
               <span>@task.Title</span>
-              <span class="pull-right text-danger delTask" data- content="@task.Title">
+              <span class="pull-right text-danger delTask" data-content="@task.Title">
                 Del
               </span>
 
@@ -139,7 +139,7 @@
               alert("Save Success!");
               commands = command;
               $(".task-item[data-title='" + title + "']").data("content", command);
-
+              $("#commands").text(commands);
             }
           });
       });
@@ -171,15 +171,7 @@
         $("#codePre").show();
 
         sendSocket(commands);
-        $.post('/webhook/runTask',
-          { commands: commands },
-          function (data) {
-
-            console.log(data);
-            if (data) {
-              $("#commands").html(data);
-            }
-          });
+      
       });
     });
 
@@ -204,8 +196,8 @@
       socket.send(data);
 
       socket.onmessage = function (event) {
-
-        $("#commands").append(event.data);
+        let data = event.data + "</br>";
+        $("#commands").append(data);
         if (event.data == "Done") {
           socket.close(1000, "Closing from client");
         }
