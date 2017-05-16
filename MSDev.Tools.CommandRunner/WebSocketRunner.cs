@@ -16,7 +16,7 @@ namespace MSDev.Tools.CommandRunner
     {
         private readonly WebSocket _webSocket;
         readonly Dictionary<String, String> _taskMap = new Dictionary<String, String>() {
-            ["bingnews"] = "cd /var/task/queue;sudo dotnet MSDev.Taskschd.dll"
+            ["test"] = "ls"
         };
 
         public WebSocketRunner(WebSocket webSocket)
@@ -64,7 +64,7 @@ namespace MSDev.Tools.CommandRunner
                     Console.WriteLine(line);
                     line = reader.ReadLine();
                 }
-
+                await Echo("Done");
                 myProcess.WaitForExit();
                 myProcess.Dispose();
 

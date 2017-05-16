@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Net.WebSockets;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,11 +42,34 @@ namespace CommandRunner.Controllers
         /// <returns></returns>
         [HttpPost]
         //TODO: 应加权限限制
-        public void RunTask(String commands)
+        public async Task RunTaskAsync(String commands)
         {
-#pragma warning disable CS4014 // 由于此调用不会等待，因此在调用完成前将继续执行当前方法
-            _runner.RunCommand(commands);
-#pragma warning restore CS4014 // 由于此调用不会等待，因此在调用完成前将继续执行当前方法
+            if (HttpContext.WebSockets.IsWebSocketRequest)
+            {
+                WebSocket webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
+                Byte[] buffer = new Byte[1024 * 4];
+                WebSocketReceiveResult result = await webSocket.ReceiveAsync(
+                  new ArraySegment<Byte>(buffer), CancellationToken.None);
+
+                var runner = new WebSocketRunner(webSocket);
+
+                while (!result.CloseStatus.HasValue)
+                {
+
+                    String msg = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
+                    if (msg == null)
+                    {
+                        continue;
+                    }
+
+                    await runner.Run(msg);
+                    result = await webSocket.ReceiveAsync(
+                      new ArraySegment<Byte>(buffer), CancellationToken.None);
+                }
+                await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+                //await Echo(webSocket, "1231");
+            }
+
 
         }
 
@@ -77,7 +103,7 @@ namespace CommandRunner.Controllers
             if (eventType == "push" && branch == defaultBranch)
             {
                 TaskModel task = await _jfh.Read(taskName);
-                RunTask(task.Commands);
+                RunTaskAsync(task.Commands);
             }
             return Ok();
         }
@@ -95,7 +121,7 @@ namespace CommandRunner.Controllers
                 return false;
             }
             TaskModel task = await _jfh.Read(taskName);
-            RunTask(task.Commands);
+            RunTaskAsync(task.Commands);
             return true;
         }
 
