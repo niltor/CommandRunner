@@ -53,6 +53,7 @@ namespace CommandRunner.Controllers
         /// <param name="taskName"></param>
         /// <returns></returns>
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> GitLab([FromBody]JObject parameter, String taskName = null)
         {
 
@@ -76,7 +77,6 @@ namespace CommandRunner.Controllers
                 TaskModel task = await _jfh.Read(taskName);
                 RunTask(task.Commands);
             }
-
             return Ok();
         }
 
