@@ -39,10 +39,12 @@ namespace CommandRunner.Controllers
         /// <returns></returns>
         [HttpPost]
         //TODO: 应加权限限制
-        public async Task<String> RunTask(String commands)
+        public void RunTask(String commands)
         {
-            String re = await _runner.RunCommand(commands);
-            return re;
+#pragma warning disable CS4014 // 由于此调用不会等待，因此在调用完成前将继续执行当前方法
+            _runner.RunCommand(commands);
+#pragma warning restore CS4014 // 由于此调用不会等待，因此在调用完成前将继续执行当前方法
+
         }
 
 
