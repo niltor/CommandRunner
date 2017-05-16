@@ -36,12 +36,12 @@ namespace CommandRunner.Controllers
         }
 
         /// <summary>
-        /// 直接调用执行命令
+        /// 鐩存帴璋冪敤鎵ц鍛戒护
         /// </summary>
         /// <param name="commands"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        //TODO: 应加权限限制
+        //TODO: 搴斿姞鏉冮檺闄愬埗
         public async Task RunTaskAsync(String commands)
         {
             if (HttpContext.WebSockets.IsWebSocketRequest)
@@ -109,7 +109,7 @@ namespace CommandRunner.Controllers
         }
 
         /// <summary>
-        /// 触发执行
+        /// 瑙﹀彂鎵ц
         /// </summary>
         /// <param name="taskName"></param>
         /// <returns></returns>
