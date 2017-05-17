@@ -26,7 +26,7 @@ namespace CommandRunner.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(String result)
+        public async Task<IActionResult> Index(string result)
         {
 
             List<TaskModel> taskList = await _jfh.ReadAllAsync();
@@ -42,7 +42,7 @@ namespace CommandRunner.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         //TODO: 应加权限限制
-        public async Task RunTaskAsync(String commands)
+        public async Task RunTaskAsync(string commands)
         {
             if (HttpContext.WebSockets.IsWebSocketRequest)
             {
@@ -56,7 +56,7 @@ namespace CommandRunner.Controllers
                 while (!result.CloseStatus.HasValue)
                 {
 
-                    String msg = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
+					string msg = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
                     if (msg == null)
                     {
                         continue;
@@ -82,16 +82,16 @@ namespace CommandRunner.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> GitLab([FromBody]JObject parameter, String taskName = null)
+        public async Task<IActionResult> GitLab([FromBody]JObject parameter, string taskName = null)
         {
 
-            String eventType = parameter.GetValue("event_name").ToString();
+			string eventType = parameter.GetValue("event_name").ToString();
             Console.WriteLine("EventName:" + eventType);
-            String branch = parameter.GetValue("ref").ToString();
+			string branch = parameter.GetValue("ref").ToString();
             branch = branch.Replace("refs/heads/", String.Empty);
             Console.WriteLine("Push Branch:" + branch);
 
-            String defaultBranch = parameter.GetValue("project").Value<String>("default_branch");
+			string defaultBranch = parameter.GetValue("project").Value<string>("default_branch");
 
             Console.WriteLine("Default Branch:" + defaultBranch);
 
@@ -114,7 +114,7 @@ namespace CommandRunner.Controllers
         /// <param name="taskName"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<Boolean> AutoRunTask(String taskName = null)
+        public async Task<Boolean> AutoRunTask(string taskName = null)
         {
             if (String.IsNullOrEmpty(taskName))
             {
@@ -157,7 +157,7 @@ namespace CommandRunner.Controllers
         }
 
         [HttpPost]
-        public IActionResult DelTask(String title)
+        public IActionResult DelTask(string title)
         {
             if (String.IsNullOrEmpty(title))
             {

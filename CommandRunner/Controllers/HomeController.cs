@@ -13,95 +13,101 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CommandRunner.Controllers
 {
-    [Authorize(Policy = "Admin")]
-    public class HomeController : Controller
-    {
+	[Authorize(Policy = "Admin")]
+	public class HomeController : Controller
+	{
 
-        /// <summary>
-        /// Login page
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Login()
-        {
-            String username = HttpContext.User.FindFirst(p => p.Type == ClaimTypes.Name)?.Value;
+		/// <summary>
+		/// Login page
+		/// </summary>
+		/// <returns></returns>
+		[HttpGet]
+		[AllowAnonymous]
+		public IActionResult Login()
+		{
+			string username = HttpContext.User.FindFirst(p => p.Type == ClaimTypes.Name)?.Value;
 
-            if (!String.IsNullOrEmpty(username))
-            {
-                return RedirectToAction(controllerName: "WebHook", actionName: "Index");
-            }
-            return View();
-        }
+			if (!String.IsNullOrEmpty(username))
+			{
+				return RedirectToAction(controllerName: "WebHook", actionName: "Index");
+			}
+			return View();
+		}
 
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<IActionResult> Login(String username, String password)
-        {
+		[HttpPost]
+		[AllowAnonymous]
+		public async Task<IActionResult> Login(string username, string password)
+		{
 
-            UserInfo userInfo = await UserHelper.GetUserAsync();
+			UserInfo userInfo = await UserHelper.GetUserAsync();
 
-            password = BitConverter.ToString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(password)));
-            if (username == userInfo.UserName && password == userInfo.Password)
-            {
-                // identity field infomatioin
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name,username),
-                    new Claim(ClaimTypes.Role,"Admin")
-                };
+			password = BitConverter.ToString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(password)));
+			if (username == userInfo.UserName && password == userInfo.Password)
+			{
+				// identity field infomatioin
+				var claims = new List<Claim>
+				{
+					new Claim(ClaimTypes.Name,username),
+					new Claim(ClaimTypes.Role,"Admin")
+				};
 
-                //create identity
-                var claimsIdentity = new ClaimsIdentity(claims, "Identity");
-
-
-                var claimsPrinciple = new ClaimsPrincipal(claimsIdentity);
-
-                await HttpContext.Authentication.SignInAsync("CommandRunnerCookies", claimsPrinciple);
-
-                HttpContext.Session.SetString("username", username);
-
-                return RedirectToAction("Index", "WebHook");
-
-            }
-            return View();
-        }
+				//create identity
+				var claimsIdentity = new ClaimsIdentity(claims, "Identity");
 
 
-        [HttpGet]
-        public async Task<IActionResult> LogoutAsync()
-        {
-            await HttpContext.Authentication.SignOutAsync("CommandRunnerCookies");
-            HttpContext.Session.Clear();
-            return RedirectToAction("Login");
-        }
+				var claimsPrinciple = new ClaimsPrincipal(claimsIdentity);
+
+				await HttpContext.Authentication.SignInAsync("CommandRunnerCookies", claimsPrinciple);
+
+				HttpContext.Session.SetString("username", username);
+
+				return RedirectToAction("Index", "WebHook");
+
+			}
+			return View();
+		}
 
 
-        [HttpGet]
-        public IActionResult Account()
-        {
+		[HttpGet]
+		public async Task<IActionResult> LogoutAsync()
+		{
+			await HttpContext.Authentication.SignOutAsync("CommandRunnerCookies");
+			HttpContext.Session.Clear();
+			return RedirectToAction("Login");
+		}
 
-            return View();
-        }
-        [HttpPost]
-        public IActionResult SetAccount(UserInfo user)
-        {
-            return View();
-        }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
+		[HttpGet]
+		public IActionResult Account(string result)
+		{
 
-            return View();
-        }
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Error()
-        {
-            return View();
-        }
-    }
+			ViewBag.Result = result == "success" ? "ÐÞ¸Ä³É¹¦" : result;
+			return View();
+		}
+		[HttpPost]
+		public async Task<IActionResult> SetAccountAsync(UserInfo user)
+		{
+
+			user.Password = BitConverter.ToString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(user.Password)));
+
+			await UserHelper.EditUserAsync(user);
+			return RedirectToAction("Account", new { result = "success" });
+
+		}
+
+		[HttpGet]
+		[AllowAnonymous]
+		public IActionResult Contact()
+		{
+			ViewData["Message"] = "Your contact page.";
+
+			return View();
+		}
+		[HttpGet]
+		[AllowAnonymous]
+		public IActionResult Error()
+		{
+			return View();
+		}
+	}
 }

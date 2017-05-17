@@ -10,7 +10,7 @@ namespace CommandRunner
 {
     public class Program
     {
-        public static void Main(String[] args)
+        public static void Main(string[] args)
         {
 
             IWebHost host = new WebHostBuilder()
