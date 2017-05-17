@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net.WebSockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +16,8 @@ namespace MSDev.Tools.CommandRunner
 	public class WebSocketRunner
 	{
 		private readonly WebSocket _webSocket;
-		readonly Dictionary<String, String> _taskMap = new Dictionary<String, String>()
+
+		private readonly Dictionary<string, string> _taskMap = new Dictionary<string, string>()
 		{
 			["test"] = "ls"
 		};
@@ -25,11 +27,11 @@ namespace MSDev.Tools.CommandRunner
 			_webSocket = webSocket;
 		}
 
-		public async Task Run(String command)
+		public async Task Run(string command)
 		{
 			var myProcess = new Process();
 
-			if (_taskMap.TryGetValue(command, out String value))
+			if (_taskMap.TryGetValue(command, out string value))
 			{
 				Console.WriteLine(value);
 				command = value;
@@ -40,13 +42,18 @@ namespace MSDev.Tools.CommandRunner
 			try
 			{
 				myProcess.StartInfo.UseShellExecute = false;
-				//linux
-				myProcess.StartInfo.FileName = "bash";
-				myProcess.StartInfo.Arguments = "-c \"" + command + "\"";
 
-				//windows
-				//myProcess.StartInfo.FileName = "powershell.exe";
-				//myProcess.StartInfo.Arguments = command;
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+				{
+					myProcess.StartInfo.FileName = "powershell.exe";
+					myProcess.StartInfo.Arguments = command;
+				}
+				else
+				{
+					//linux
+					myProcess.StartInfo.FileName = "bash";
+					myProcess.StartInfo.Arguments = "-c \"" + command + "\"";
+				}
 
 				Console.WriteLine("command is :" + command);
 
@@ -57,7 +64,7 @@ namespace MSDev.Tools.CommandRunner
 				myProcess.Start();
 
 				StreamReader reader = myProcess.StandardOutput;
-				String line = reader.ReadLine();
+				string line = reader.ReadLine();
 
 				while (line != null)
 				{
@@ -68,14 +75,18 @@ namespace MSDev.Tools.CommandRunner
 				await Echo("Done");
 				myProcess.WaitForExit();
 				myProcess.Dispose();
-
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine(e.Message);
 			}
 		}
-		private async Task Echo(String message) => await _webSocket.SendAsync(
-			  new ArraySegment<Byte>(Encoding.UTF8.GetBytes(message), 0, message.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+
+		private async Task Echo(string message)
+		{
+			var utf8 = new UTF8Encoding();
+			byte[] encodedBytes = utf8.GetBytes(message);
+			await _webSocket.SendAsync(new ArraySegment<byte>(encodedBytes, 0, message.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+		}
 	}
 }

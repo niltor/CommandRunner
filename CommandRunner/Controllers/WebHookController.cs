@@ -103,8 +103,10 @@ namespace CommandRunner.Controllers
             if (eventType == "push" && branch == defaultBranch)
             {
                 TaskModel task = await _jfh.Read(taskName);
-                RunTaskAsync(task.Commands);
-            }
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+				RunTaskAsync(task.Commands);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+			}
             return Ok();
         }
 
@@ -121,8 +123,10 @@ namespace CommandRunner.Controllers
                 return false;
             }
             TaskModel task = await _jfh.Read(taskName);
-            RunTaskAsync(task.Commands);
-            return true;
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+			RunTaskAsync(task.Commands);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+			return true;
         }
 
 

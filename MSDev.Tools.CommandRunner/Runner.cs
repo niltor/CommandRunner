@@ -7,63 +7,65 @@ using System.Threading.Tasks;
 
 namespace MSDev.Tools.CommandRunner
 {
-    public class Runner
-    {
-        //private readonly Dictionary<String, String> _taskMap = new Dictionary<String, String>() {
-        //  ["bingnews"] = "cd /var/task/queue;sudo dotnet MSDev.Taskschd.dll"
-        //};
+	public class Runner
+	{
+		//private readonly Dictionary<String, String> _taskMap = new Dictionary<String, String>() {
+		//  ["bingnews"] = "cd /var/task/queue;sudo dotnet MSDev.Taskschd.dll"
+		//};
 
-        public Runner()
-        {
+		public Runner()
+		{
 
-        }
+		}
 
-        public async Task<String> RunCommand(String command)
-        {
-            String result = command + "\r";
-            var myProcess = new Process();
-            try
-            {
-                myProcess.StartInfo.UseShellExecute = false;
+		public async Task<string> RunCommand(string command)
+		{
+			string result = command + "\r";
+			var myProcess = new Process();
+			try
+			{
+				myProcess.StartInfo.UseShellExecute = false;
 
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    myProcess.StartInfo.FileName = "bash";
-                    myProcess.StartInfo.Arguments = $"-c \"{command}\"";
-                } else
-                {
-                    myProcess.StartInfo.FileName = "powershell.exe";
-                    myProcess.StartInfo.Arguments = command;
-                }
-                myProcess.StartInfo.CreateNoWindow = false;
-                myProcess.StartInfo.RedirectStandardOutput = true;
-                myProcess.StartInfo.StandardOutputEncoding = Encoding.UTF8;
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+				{
+					myProcess.StartInfo.FileName = "bash";
+					myProcess.StartInfo.Arguments = $"-c \"{command}\"";
+				}
+				else
+				{
+					myProcess.StartInfo.FileName = "powershell.exe";
+					myProcess.StartInfo.Arguments = command;
+				}
+				myProcess.StartInfo.CreateNoWindow = false;
+				myProcess.StartInfo.RedirectStandardOutput = true;
+				myProcess.StartInfo.StandardOutputEncoding = Encoding.UTF8;
 
-                myProcess.Start();
+				myProcess.Start();
 
-                StreamReader reader = myProcess.StandardOutput;
-                String line = await reader.ReadLineAsync();
+				StreamReader reader = myProcess.StandardOutput;
+				string line = await reader.ReadLineAsync();
 
-                while (line != null)
-                {
-                    result += line + "\r";
-                    Console.WriteLine(line);
-                    line = reader.ReadLine();
-                }
-                Console.WriteLine("Done!");
-                result += "Done";
+				while (line != null)
+				{
+					result += line + "\r";
+					Console.WriteLine(line);
+					line = reader.ReadLine();
+				}
+				Console.WriteLine("Done!");
+				result += "Done";
 
-                myProcess.WaitForExit();
-                myProcess.Dispose();
+				myProcess.WaitForExit();
+				myProcess.Dispose();
 
-            } catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return e.Message;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+				return e.Message;
 
-            }
+			}
 
-            return result;
-        }
-    }
+			return result;
+		}
+	}
 }

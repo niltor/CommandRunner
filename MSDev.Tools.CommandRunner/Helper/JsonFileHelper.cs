@@ -12,7 +12,7 @@ namespace MSDev.Tools.CommandRunner
     /// </summary>
     public class JsonFileHelper
     {
-        public const String DirPath = "./commandTasks";
+        public const string DirPath = "./commandTasks";
         public JsonFileHelper()
         {
 
@@ -34,7 +34,7 @@ namespace MSDev.Tools.CommandRunner
                 foreach (FileInfo file in files)
                 {
                     StreamReader reader = file.OpenText();
-                    String jsonString = await reader.ReadToEndAsync();
+					string jsonString = await reader.ReadToEndAsync();
                     reader.Dispose();
                     TaskModel taskModel = JsonConvert.DeserializeObject<TaskModel>(jsonString);
 
@@ -53,7 +53,7 @@ namespace MSDev.Tools.CommandRunner
         /// </summary>
         /// <param name="fileName">任务名称</param>
         /// <returns></returns>
-        public async Task<TaskModel> Read(String fileName)
+        public async Task<TaskModel> Read(string fileName)
         {
             var taskModel = new TaskModel();
 
@@ -64,7 +64,7 @@ namespace MSDev.Tools.CommandRunner
             }
 
             StreamReader reader = file.OpenText();
-            String jsonString = await reader.ReadToEndAsync();
+			string jsonString = await reader.ReadToEndAsync();
             reader.Dispose();
 
             taskModel = JsonConvert.DeserializeObject<TaskModel>(jsonString);
@@ -94,7 +94,7 @@ namespace MSDev.Tools.CommandRunner
         /// </summary>
         /// <param name="fileName">任务名称</param>
         /// <returns></returns>
-        public Boolean Delete(String fileName)
+        public Boolean Delete(string fileName)
         {
             FileInfo file = new FileInfo(Path.Combine(DirPath, fileName + ".json"));
             if (file.Exists)
@@ -105,7 +105,7 @@ namespace MSDev.Tools.CommandRunner
         }
 
 
-        public async Task<Boolean> Update(String fileName, TaskModel task)
+        public async Task<Boolean> Update(string fileName, TaskModel task)
         {
             Delete(fileName);
             await Insert(task);
