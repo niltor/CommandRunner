@@ -47,9 +47,9 @@ namespace CommandRunner.Controllers
             if (HttpContext.WebSockets.IsWebSocketRequest)
             {
                 WebSocket webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
-                Byte[] buffer = new Byte[1024 * 4];
+				byte[] buffer = new byte[1024 * 4];
                 WebSocketReceiveResult result = await webSocket.ReceiveAsync(
-                  new ArraySegment<Byte>(buffer), CancellationToken.None);
+                  new ArraySegment<byte>(buffer), CancellationToken.None);
 
                 var runner = new WebSocketRunner(webSocket);
 
@@ -64,7 +64,7 @@ namespace CommandRunner.Controllers
 
                     await runner.Run(msg);
                     result = await webSocket.ReceiveAsync(
-                      new ArraySegment<Byte>(buffer), CancellationToken.None);
+                      new ArraySegment<byte>(buffer), CancellationToken.None);
                 }
                 await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
                 //await Echo(webSocket, "1231");

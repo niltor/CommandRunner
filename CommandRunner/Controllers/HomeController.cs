@@ -81,7 +81,7 @@ namespace CommandRunner.Controllers
 		public IActionResult Account(string result)
 		{
 
-			ViewBag.Result = result == "success" ? "�޸ĳɹ�" : result;
+			ViewBag.Result = result == "success" ? "修改成功" : result;
 			return View();
 		}
 		[HttpPost]

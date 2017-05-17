@@ -73,7 +73,7 @@ namespace CommandRunner.Helpers
 				Password = BitConverter.ToString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes("MSDev.cc")))
 			};
 
-			Byte[] jsonBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(defaultUser));
+			byte[] jsonBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(defaultUser));
 			await stream.WriteAsync(jsonBytes, 0, jsonBytes.Length);
 
 			stream.Dispose();
