@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace CommandRunner.Helpers
                 var file = new FileInfo("./user.lock");
                 StreamReader stream = file.OpenText();
 
-                String content = stream.ReadToEnd();
+				string content = stream.ReadToEnd();
                 // UserInfo is null,Init it;
                 if (String.IsNullOrEmpty(content))
                 {
@@ -65,7 +65,7 @@ namespace CommandRunner.Helpers
                 Password = BitConverter.ToString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes("MSDev.cc")))
             };
 
-            Byte[] jsonBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(defaultUser));
+			byte[] jsonBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(defaultUser));
             await stream.WriteAsync(jsonBytes, 0, jsonBytes.Length);
 
             stream.Dispose();
@@ -75,7 +75,7 @@ namespace CommandRunner.Helpers
         {
             var file = new FileInfo("./user.lock");
             FileStream stream = file.OpenWrite();
-            Byte[] jsonBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user));
+			byte[] jsonBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user));
             await stream.WriteAsync(jsonBytes, 0, jsonBytes.Length);
 
             stream.Dispose();
@@ -85,8 +85,8 @@ namespace CommandRunner.Helpers
 
     public class UserInfo
     {
-        public String UserName { get; set; }
-        public String Password { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
 
     }
 

@@ -16,7 +16,7 @@ namespace CommandRunner.Helpers
         {
             ISession session = context.HttpContext.Session;
 
-            String cookieUserName = context.Principal.FindFirst(p => p.Type == ClaimTypes.Name)?.Value;
+			string cookieUserName = context.Principal.FindFirst(p => p.Type == ClaimTypes.Name)?.Value;
 
             //TODO: 根据cookie同步session，缺少session的判断....
             if (!String.IsNullOrEmpty(cookieUserName))

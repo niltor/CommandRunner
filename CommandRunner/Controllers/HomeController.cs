@@ -25,7 +25,7 @@ namespace CommandRunner.Controllers
         [AllowAnonymous]
         public IActionResult Login()
         {
-            String username = HttpContext.User.FindFirst(p => p.Type == ClaimTypes.Name)?.Value;
+			string username = HttpContext.User.FindFirst(p => p.Type == ClaimTypes.Name)?.Value;
 
             if (!String.IsNullOrEmpty(username))
             {
@@ -36,7 +36,7 @@ namespace CommandRunner.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(String username, String password)
+        public async Task<IActionResult> Login(string username, string password)
         {
 
             UserInfo userInfo = await UserHelper.GetUserAsync();
