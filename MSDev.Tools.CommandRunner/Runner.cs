@@ -18,9 +18,9 @@ namespace MSDev.Tools.CommandRunner
 
         }
 
-        public async Task<String> RunCommand(String command)
+        public async Task<string> RunCommand(string command)
         {
-            String result = command + "\r";
+			string result = command + "\r";
             var myProcess = new Process();
             try
             {
@@ -42,7 +42,7 @@ namespace MSDev.Tools.CommandRunner
                 myProcess.Start();
 
                 StreamReader reader = myProcess.StandardOutput;
-                String line = await reader.ReadLineAsync();
+				string line = await reader.ReadLineAsync();
 
                 while (line != null)
                 {

@@ -15,7 +15,7 @@ namespace MSDev.Tools.CommandRunner
   public class WebSocketRunner
   {
     private readonly WebSocket _webSocket;
-    readonly Dictionary<String, String> _taskMap = new Dictionary<String, String>()
+    readonly Dictionary<string, string> _taskMap = new Dictionary<string, string>()
     {
       ["test"] = "ls"
     };
@@ -25,11 +25,11 @@ namespace MSDev.Tools.CommandRunner
       _webSocket = webSocket;
     }
 
-    public async Task Run(String command)
+    public async Task Run(string command)
     {
       var myProcess = new Process();
 
-      if (_taskMap.TryGetValue(command, out String value))
+      if (_taskMap.TryGetValue(command, out string value))
       {
         Console.WriteLine(value);
         command = value;
@@ -57,7 +57,7 @@ namespace MSDev.Tools.CommandRunner
         myProcess.Start();
 
         StreamReader reader = myProcess.StandardOutput;
-        String line = reader.ReadLine();
+				string line = reader.ReadLine();
 
         while (line != null)
         {
@@ -75,7 +75,7 @@ namespace MSDev.Tools.CommandRunner
         Console.WriteLine(e.Message);
       }
     }
-    private async Task Echo(String message) => await _webSocket.SendAsync(
-          new ArraySegment<Byte>(Encoding.UTF8.GetBytes(message), 0, message.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+    private async Task Echo(string message) => await _webSocket.SendAsync(
+          new ArraySegment<byte>(Encoding.UTF8.GetBytes(message), 0, message.Length), WebSocketMessageType.Text, true, CancellationToken.None);
   }
 }

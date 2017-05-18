@@ -8,18 +8,18 @@ using Newtonsoft.Json;
 namespace MSDev.Tools.CommandRunner
 {
     /// <summary>
-    /// Ã¿¸öÎÄ¼ş´ú±íÒ»¸öÈÎÎñÃüÁî
+    /// æ¯ä¸ªæ–‡ä»¶ä»£è¡¨ä¸€ä¸ªä»»åŠ¡å‘½ä»¤
     /// </summary>
     public class JsonFileHelper
     {
-        public const String DirPath = "./commandTasks";
+        public const string DirPath = "./commandTasks";
         public JsonFileHelper()
         {
 
         }
 
         /// <summary>
-        /// ¶ÁÈ¡ÈÎÎñÁĞ±í
+        /// è¯»å–ä»»åŠ¡åˆ—è¡¨
         /// </summary>
         /// <returns></returns>
         public async Task<List<TaskModel>> ReadAllAsync()
@@ -34,7 +34,7 @@ namespace MSDev.Tools.CommandRunner
                 foreach (FileInfo file in files)
                 {
                     StreamReader reader = file.OpenText();
-                    String jsonString = await reader.ReadToEndAsync();
+					string jsonString = await reader.ReadToEndAsync();
                     reader.Dispose();
                     TaskModel taskModel = JsonConvert.DeserializeObject<TaskModel>(jsonString);
 
@@ -49,11 +49,11 @@ namespace MSDev.Tools.CommandRunner
 
         }
         /// <summary>
-        /// ¶ÁÈ¡Ä³Ò»ÈÎÎñÅäÖÃ
+        /// è¯»å–æŸä¸€ä»»åŠ¡é…ç½®
         /// </summary>
-        /// <param name="fileName">ÈÎÎñÃû³Æ</param>
+        /// <param name="fileName">ä»»åŠ¡åç§°</param>
         /// <returns></returns>
-        public async Task<TaskModel> Read(String fileName)
+        public async Task<TaskModel> Read(string fileName)
         {
             var taskModel = new TaskModel();
 
@@ -64,7 +64,7 @@ namespace MSDev.Tools.CommandRunner
             }
 
             StreamReader reader = file.OpenText();
-            String jsonString = await reader.ReadToEndAsync();
+			string jsonString = await reader.ReadToEndAsync();
             reader.Dispose();
 
             taskModel = JsonConvert.DeserializeObject<TaskModel>(jsonString);
@@ -72,7 +72,7 @@ namespace MSDev.Tools.CommandRunner
         }
 
         /// <summary>
-        /// ĞÂ½¨ÈÎÎñ
+        /// æ–°å»ºä»»åŠ¡
         /// </summary>
         /// <param name="task">TaskModel</param>
         /// <returns></returns>
@@ -90,11 +90,11 @@ namespace MSDev.Tools.CommandRunner
         }
 
         /// <summary>
-        /// É¾³ıÒ»ÈÎÎñ
+        /// åˆ é™¤ä¸€ä»»åŠ¡
         /// </summary>
-        /// <param name="fileName">ÈÎÎñÃû³Æ</param>
+        /// <param name="fileName">ä»»åŠ¡åç§°</param>
         /// <returns></returns>
-        public Boolean Delete(String fileName)
+        public Boolean Delete(string fileName)
         {
             FileInfo file = new FileInfo(Path.Combine(DirPath, fileName + ".json"));
             if (file.Exists)
@@ -105,7 +105,7 @@ namespace MSDev.Tools.CommandRunner
         }
 
 
-        public async Task<Boolean> Update(String fileName, TaskModel task)
+        public async Task<Boolean> Update(string fileName, TaskModel task)
         {
             Delete(fileName);
             await Insert(task);
