@@ -69,9 +69,7 @@ namespace CommandRunner.Controllers
 				await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
 				//await Echo(webSocket, "1231");
 			}
-
 		}
-
 
 		/// <summary>
 		/// GitLab WebHook
@@ -83,7 +81,6 @@ namespace CommandRunner.Controllers
 		[AllowAnonymous]
 		public async Task<IActionResult> GitLab([FromBody]JObject parameter, string taskName = null)
 		{
-
 			string eventType = parameter.GetValue("event_name").ToString();
 			Console.WriteLine("EventName:" + eventType);
 			string branch = parameter.GetValue("ref").ToString();
@@ -102,7 +99,11 @@ namespace CommandRunner.Controllers
 			if (eventType == "push" && branch == defaultBranch)
 			{
 				TaskModel task = await _jfh.Read(taskName);
-				RunTaskAsync(task.Commands);
+
+				var runner = new Runner();
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+				runner.RunCommand(task.Commands);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 			}
 			return Ok();
 		}
@@ -113,14 +114,15 @@ namespace CommandRunner.Controllers
 		/// <param name="taskName"></param>
 		/// <returns></returns>
 		[HttpPost]
-		public async Task<Boolean> AutoRunTask(string taskName = null)
+		public async Task<bool> AutoRunTask(string taskName = null)
 		{
 			if (String.IsNullOrEmpty(taskName))
 			{
 				return false;
 			}
 			TaskModel task = await _jfh.Read(taskName);
-			RunTaskAsync(task.Commands);
+			var runner = new Runner();
+			await runner.RunCommand(task.Commands);
 			return true;
 		}
 
@@ -131,7 +133,7 @@ namespace CommandRunner.Controllers
 		{
 
 			task.Id = Guid.NewGuid();
-			Boolean re = await _jfh.Update(task.Title, task);
+			bool re = await _jfh.Update(task.Title, task);
 			return Content(re.ToString());
 		}
 
@@ -161,13 +163,11 @@ namespace CommandRunner.Controllers
 			if (String.IsNullOrEmpty(title))
 			{
 				return Content("null");
-			} else
+			}
+			else
 			{
 				return Content(_jfh.Delete(title) ? "success" : "failed");
 			}
 		}
 	}
-
-
-
 }

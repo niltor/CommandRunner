@@ -76,7 +76,7 @@ namespace MSDev.Tools.CommandRunner
         /// </summary>
         /// <param name="task">TaskModel</param>
         /// <returns></returns>
-        public async Task<Boolean> Insert(TaskModel task)
+        public async Task<bool> Insert(TaskModel task)
         {
             FileInfo file = new FileInfo(Path.Combine(DirPath, task.Title + ".json"));
             if (file.Exists)
@@ -94,7 +94,7 @@ namespace MSDev.Tools.CommandRunner
         /// </summary>
         /// <param name="fileName">任务名称</param>
         /// <returns></returns>
-        public Boolean Delete(string fileName)
+        public bool Delete(string fileName)
         {
             FileInfo file = new FileInfo(Path.Combine(DirPath, fileName + ".json"));
             if (file.Exists)
@@ -105,7 +105,7 @@ namespace MSDev.Tools.CommandRunner
         }
 
 
-        public async Task<Boolean> Update(string fileName, TaskModel task)
+        public async Task<bool> Update(string fileName, TaskModel task)
         {
             Delete(fileName);
             await Insert(task);
