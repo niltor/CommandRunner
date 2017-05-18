@@ -1,222 +1,222 @@
 @using System.Collections.Generic
 @using MSDev.Tools.CommandRunner.Models
 @{
-    ViewData["Title"] = "Index";
-    List<TaskModel> taskList = ViewBag.TaskList;
+	ViewData["Title"] = "Index";
+	List<TaskModel> taskList = ViewBag.TaskList;
 }
 <style type="text/css">
-  .task-item {
-    padding: 4px;
-    border: 1px solid #aaa;
-    cursor: pointer;
-    margin-bottom: 4px;
-  }
+	.task-item {
+		padding: 4px;
+		border: 1px solid #aaa;
+		cursor: pointer;
+		margin-bottom: 4px;
+	}
 
-  .consoleWindow > pre {
-    background: #222 !important;
-    color: #00a000 !important;
-    border: none;
-  }
+	.consoleWindow > pre {
+		background: #222 !important;
+		color: #00a000 !important;
+		border: none;
+	}
 
-  .consoleWindow {
-    max-height: 600px;
-    overflow-y: auto;
-    margin-bottom: 12px;
-  }
+	.consoleWindow {
+		max-height: 600px;
+		overflow-y: auto;
+		margin-bottom: 12px;
+	}
 </style>
 <div class="row">
 
-  <div class="col-xs-3">
-    <h4>
-      Task List
-    </h4>
+	<div class="col-xs-3">
+		<h4>
+			Task List
+		</h4>
 
-    @{
-        if (taskList != null)
-        {
+		@{
+			if (taskList != null)
+			{
 
-          foreach (TaskModel task in taskList)
-          {
-            //task-item
-            <div class="task-item" data-content="@task.Commands" data-title="@task.Title">
-              <span>@task.Title</span>
-              <span class="pull-right text-danger delTask" data-content="@task.Title">
-                Del
-              </span>
+				foreach (TaskModel task in taskList)
+				{
+					//task-item
+					<div class="task-item" data-content="@task.Commands" data-title="@task.Title">
+						<span>@task.Title</span>
+						<span class="pull-right text-danger delTask" data-content="@task.Title">
+							Del
+						</span>
 
-            </div>
+					</div>
 
-          }
-        }
-    }
-  </div>
+				}
+			}
+		}
+	</div>
 
-  <div class="col-xs-8">
+	<div class="col-xs-8">
 
-    <h4>
-      Commands
-      <button class="btn btn-sm btn-primary" id="runCommands"> Run </button>
-    </h4>
-    @* consoleWindow *@
-    <div class="consoleWindow">
+		<h4>
+			Commands
+			<button class="btn btn-sm btn-primary" id="runCommands"> Run </button>
+		</h4>
+		@* consoleWindow *@
+		<div class="consoleWindow">
 
-      @*  editCommandComponent *@
-      <div id="editCommandComponent" class="well well-sm" style="display: none;">
-        <h4>
-          Edit Commands
-        </h4>
+			@*  editCommandComponent *@
+			<div id="editCommandComponent" class="well well-sm" style="display: none;">
+				<h4>
+					Edit Commands
+				</h4>
 
-        <div class="form-group">
-          <textarea name="commands" class="form-control" rows="3" id="editCommandInput"> </textarea>
+				<div class="form-group">
+					<textarea name="commands" class="form-control" rows="5" id="editCommandInput"> </textarea>
 
-        </div>
-        <div class="form-group">
-          <button class="btn btn-sm btn-success" id="saveCommandButton">
-            Save
-          </button>
+				</div>
+				<div class="form-group">
+					<button class="btn btn-sm btn-success" id="saveCommandButton">
+						Save
+					</button>
 
-        </div>
+				</div>
 
-      </div>
+			</div>
 
-      @* codePre *@
-      <pre id="codePre" style="display: none;"> <code id="commands"> </code></pre>
+			@* codePre *@
+			<pre id="codePre" style="display: none;"> <code id="commands"> </code></pre>
 
-    </div>
-    @* addCommand Form *@
-    <form asp- action="AddCommand" method="post" class="well well-sm">
-      <h4>
-        Add Commands
-      </h4>
-      <div class="form-group">
-        <input type="text" name="Title" value="" class="form-control"
-               placeholder="Task Name" required />
-      </div>
-      <div class="form-group">
-<textarea name="Commands" rows="3" class="form-control"
-          placeholder="Commands" required> </textarea>
-      </div>
-      <div class="form-group">
+		</div>
+		@* addCommand Form *@
+		<form asp- action="AddCommand" method="post" class="well well-sm">
+			<h4>
+				Add Commands
+			</h4>
+			<div class="form-group">
+				<input type="text" name="Title" value="" class="form-control"
+					   placeholder="Task Name" required />
+			</div>
+			<div class="form-group">
+<textarea name="Commands" rows="5" class="form-control"
+		  placeholder="Commands" required> </textarea>
+			</div>
+			<div class="form-group">
 
-        <button class="btn btn-sm btn-success" type="submit">
-          New
-        </button>
-      </div>
-    </form>
-  </div>
+				<button class="btn btn-sm btn-success" type="submit">
+					New
+				</button>
+			</div>
+		</form>
+	</div>
 </div>
 @section Scripts{
-  <script>
+	<script>
 
-    var socket;
-    $(document).ready(function () {
-      var title = "";
-      var commands = "";
+		var socket;
+		$(document).ready(function () {
+			var title = "";
+			var commands = "";
+			//chose title
+			$(".task-item").click(function () {
+				commands = $(this).data("content");
+				title = $(this).data("title");
 
-      initSocket();
+				$("#editCommandInput").val(commands);
+				$("#editCommandComponent").show();
+				$("#codePre").hide();
+				$("#commands").text(commands);
+				initSocket();
+			});
 
-      //chose title
-      $(".task-item").click(function () {
-        commands = $(this).data("content");
-        title = $(this).data("title");
+			//edit
+			$("#saveCommandButton").click(function (event) {
+				const command = $("#editCommandInput").val();
 
-        $("#editCommandInput").val(commands);
-        $("#editCommandComponent").show();
-        $("#codePre").hide();
-        $("#commands").text(commands);
+				$.post('/webhook/EditCommand',
+					{ Id: null, Title: title, Commands: command },
+					function (data) {
+						console.log(data);
+						if (data === "True") {
+							alert("Save Success!");
+							commands = command;
+							$(".task-item[data-title='" + title + "']").data("content", command);
+							$("#commands").text(commands);
+						}
+					});
+			});
 
-      });
+			//del
+			$(".delTask").click(function (event) {
+				event.preventDefault();
+				title = $(this).data("content");
+				$.post('/webhook/delTask',
+					{ title: title },
+					function (data) {
+						if (data === "success") {
+							location.reload();
+						} else {
+							alert("del failed!");
+						}
+					});
 
-      //edit
-      $("#saveCommandButton").click(function (event) {
-        const command = $("#editCommandInput").val();
+				return false;
+			});
 
-        $.post('/webhook/EditCommand',
-          { Id: null, Title: title, Commands: command },
-          function (data) {
-            console.log(data);
-            if (data === "True") {
-              alert("Save Success!");
-              commands = command;
-              $(".task-item[data-title='" + title + "']").data("content", command);
-              $("#commands").text(commands);
-            }
-          });
-      });
+			//run
+			$("#runCommands").click(function () {
+				if (commands === "" || commands == null) {
+					alert("please chose your task!");
+				}
 
-      //del
-      $(".delTask").click(function (event) {
-        event.preventDefault();
-        title = $(this).data("content");
-        $.post('/webhook/delTask',
-          { title: title },
-          function (data) {
-            if (data === "success") {
-              location.reload();
-            } else {
-              alert("del failed!");
-            }
-          });
-
-        return false;
-      });
-
-      //run
-      $("#runCommands").click(function () {
-        if (commands === "" || commands == null) {
-          alert("please chose your task!");
-        }
-
-        $("#editCommandComponent").hide();
-        $("#codePre").show();
-
-        sendSocket(commands);
-      
-      });
-    });
+				$("#editCommandComponent").hide();
+				$("#codePre").show();
 
 
-    function initSocket() {
-      var scheme = document.location.protocol == "https:" ? "wss" : "ws";
-      var port = document.location.port ? (":" + document.location.port) : "";
-      connectionUrl = scheme + "://" + document.location.hostname + port + "/webhook/RunTaskAsync";
+				sendSocket(commands);
 
-      socket = new WebSocket(connectionUrl);
-      socket.onopen = function (event) {
-        console.log("websocket open");
-      };
-    }
+			});
+		});
 
 
-    function sendSocket(data) {
-      if (!socket || socket.readyState != WebSocket.OPEN) {
-        alert("socket not connected");
-      }
+		function initSocket() {
+			var scheme = document.location.protocol == "https:" ? "wss" : "ws";
+			var port = document.location.port ? (":" + document.location.port) : "";
+			connectionUrl = scheme + "://" + document.location.hostname + port + "/webhook/RunTaskAsync";
 
-      socket.send(data);
+			if (!socket || socket.readyState != WebSocket.OPEN) {
 
-      socket.onmessage = function (event) {
-        console.log(event.data);
-        let data = event.data + "</br>";
-        $("#commands").append(data);
-        if (event.data == "Done") {
-          socket.close(1000, "Closing from client");
-        }
-      };
-
-      socket.onclose = function (event) {
-        console.log(event.code + event.reason);
-
-      };
-      socket.onerror = function (event) {
-        console.log(event.code + event.reason);
-
-      };
-    }
+				socket = new WebSocket(connectionUrl);
+				socket.onopen = function (event) {
+					console.log("websocket open");
+				};
+			}
 
 
+		}
 
 
-  </script>
+		function sendSocket(data) {
+			if (!socket || socket.readyState != WebSocket.OPEN) {
+				alert("socket not connected");
+			}
+
+			socket.send(data);
+
+			socket.onmessage = function (event) {
+				console.log(event.data);
+				let data = event.data + "</br>";
+				$("#commands").append(data);
+				if (event.data == "Done") {
+					socket.close(1000, "Closing from client");
+				}
+			};
+
+			socket.onclose = function (event) {
+				console.log(event.code + event.reason);
+
+			};
+			socket.onerror = function (event) {
+				console.log(event.code + event.reason);
+
+			};
+		}
+
+	</script>
 }
 

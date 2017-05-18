@@ -4,6 +4,7 @@
 
 */wwwroot/lib/
 */commandTasks/
+*.lock
 # User-specific files
 *.suo
 *.user
